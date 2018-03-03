@@ -15,7 +15,7 @@ app.post('/todos',(req,res) => {
         completedAt:req.body.completedAt
     });
     todo.save().then((result)=>{
-        res.send(JSON.stringify(result,undefined,2));
+        res.send(result);
     },(err)=>{
         res.status(400).send(err);
     })
@@ -27,6 +27,7 @@ app.listen(3000,()=>{
     console.log('Server started on port 3000');
 })
 
+module.exports = {app};
 
 //https://maps.googleapis.com/maps/api/geocode/json?address=BN164GB&key=AIzaSyDGG6l5sdrAy3c4kmqQAM-WoefoUVr1Usw
 
