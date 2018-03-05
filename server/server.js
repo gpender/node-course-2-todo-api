@@ -7,6 +7,7 @@ const {ObjectID} = require('mongodb');
 
 var mongoose = require('./db/mongoose.js').mongoose;
 var User = require('./models/user').User;
+var {authenticate} = require('./middleware/authenticate');
 var Todo = require('./models/todo').Todo;
 
 var app = express();
@@ -17,9 +18,6 @@ app.use(bodyParser.json());
 app.post('/users',(req,res)=>{
     var body = _.pick(req.body,['email','password']);
     var user = new User(body);
-    // var user = new User({
-    //     email:req.body.email
-    // });
     user.save().then(()=>{
         return user.generateAuthToken();
     }).then((token)=>{
@@ -28,6 +26,10 @@ app.post('/users',(req,res)=>{
     .catch((err)=>{
         res.status(404).send(err);
     });
+});
+
+app.get('/users/me',authenticate,(req,res)=>{
+    res.send(req.user);
 });
 
 app.get('/users',(req,res)=>{
