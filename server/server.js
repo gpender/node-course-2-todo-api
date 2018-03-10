@@ -18,13 +18,20 @@ app.use(bodyParser.json());
 app.post('/users',(req,res)=>{
     var body = _.pick(req.body,['email','password']);
     var user = new User(body);
-    user.save().then(()=>{
-        return user.generateAuthToken();
-    }).then((token)=>{
-        res.header('x-auth',token).send(user);
+    
+    user.save().then((result) => {
+       return user.generateAuthToken();
+    },(err)=>{
+        res.status(400).send();
+    }).then((token) => {
+        if(token){
+            res.header('x-auth',token).send(user);
+        }else{
+            res.status(400).send();
+        }
     })
     .catch((err)=>{
-        res.status(404).send(err);
+        res.status(400).send(err);
     });
 });
 
